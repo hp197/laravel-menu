@@ -540,6 +540,10 @@ class Builder
     {
         $nb = $this->spawn('subMenu', new Collection());
 
+        if (!$this->hasActive()) {
+            return $nb;
+        }
+
         $subs = $this->active()->children();
         foreach ($subs as $s) {
             $nb->add($s->title, $s->url());
@@ -556,6 +560,10 @@ class Builder
     public function siblingMenu()
     {
         $nb = $this->spawn('siblingMenu', new Collection());
+
+        if (!$this->hasActive()) {
+            return $nb;
+        }
 
         $parent = $this->active()->parent();
         if ($parent) {
@@ -582,12 +590,12 @@ class Builder
     {
         $nb = $this->spawn('crumbMenu', new Collection());
 
-        $item = $this->active();
-        $items = [$item];
-        
-        if ($item === null) {
+        if (!$this->hasActive()) {
             return $nb;
         }
+
+        $item = $this->active();
+        $items = [$item];
 
         while ($item->hasParent()) {
             $item = $item->parent();
@@ -859,5 +867,15 @@ class Builder
         }
 
         return $this->whereNickname($prop)->first();
+    }
+
+    /**
+     * Check if there are items in the menu.
+     *
+     * @return bool
+     * */
+    public function hasActive()
+    {
+        return !is_null($this->active());
     }
 }
